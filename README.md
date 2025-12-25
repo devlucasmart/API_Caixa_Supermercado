@@ -27,15 +27,16 @@ A aplicação expõe uma **API REST** que retorna os dados em formato **JSON**.
 - Retorno de dados em formato **JSON**, seguindo boas práticas de APIs REST.
 
 
-
-
-
 ## Tecnologias Utilizadas
 
 - Java 21+
 - Spring Boot
 - Spring Data JPA
-- PostgreSQL## 🔗 Endpoints
+- PostgreSQL
+-
+
+
+## 🔗 Endpoints
 
 🛒 Produtos
 
@@ -63,6 +64,7 @@ URL base: /api/mercado/compras
 | `PUT`    | `/api/mercado/compras/{compraId}/pagamento/{pagamento}` | Define ou atualiza a **forma de pagamento**   | `/api/mercado/compras/10/pagamento/CREDITO`       |
 | `POST`   | `/api/mercado/compras/{compraId}/produtos/{produtoId}`  | Adiciona um **produto** à compra              | `/api/mercado/compras/10/produtos/5`              |
 | `DELETE` | `/api/mercado/compras/{compraId}/produtos/{produtoId}`  | Remove um **produto** da compra               | `/api/mercado/compras/10/produtos/5`              |
+
 
 ## Exemplo de saída
 
