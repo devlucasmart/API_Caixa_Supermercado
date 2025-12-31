@@ -15,9 +15,8 @@ A aplicação expõe uma **API REST** que retorna os dados em formato **JSON**.
     - Gerenciamento de **compras**:
         - Registro de compras
         - Consulta de compras
-        - Associação de produtos a uma compra
-        - Definição da forma de pagamento
-
+        - Validação de dados de compra
+        - 
 - Tratamento centralizado de exceções:
     - Produto não encontrado
     - Produto inválido
@@ -33,7 +32,7 @@ A aplicação expõe uma **API REST** que retorna os dados em formato **JSON**.
 - Spring Boot
 - Spring Data JPA
 - PostgreSQL
--
+- Hibernate
 
 
 ## 🔗 Endpoints
@@ -61,9 +60,6 @@ URL base: /api/mercado/compras
 | `POST`   | `/api/mercado/compras`                                | Registra uma nova compra                      | `/api/mercado/compras`                            |
 | `PUT`    | `/api/mercado/compras/{id}`                           | Atualiza uma compra existente                 | `/api/mercado/compras/10`                         |
 | `DELETE` | `/api/mercado/compras/{id}`                           | Remove uma compra pelo **ID**                 | `/api/mercado/compras/10`                         |
-| `PUT`    | `/api/mercado/compras/{compraId}/pagamento/{pagamento}` | Define ou atualiza a **forma de pagamento**   | `/api/mercado/compras/10/pagamento/CREDITO`       |
-| `POST`   | `/api/mercado/compras/{compraId}/produtos/{produtoId}`  | Adiciona um **produto** à compra              | `/api/mercado/compras/10/produtos/5`              |
-| `DELETE` | `/api/mercado/compras/{compraId}/produtos/{produtoId}`  | Remove um **produto** da compra               | `/api/mercado/compras/10/produtos/5`              |
 
 
 ## Exemplo de saída
@@ -71,30 +67,29 @@ URL base: /api/mercado/compras
 ```json
 [
     {
-        "formaPagamento": "DEBITO",
-        "dataCompra": "2025-10-21T20:52:42.859195",
         "id": 19,
+        "dataCompra": "2025-10-21T20:52:42.859195",
         "produtosCompra": [
             {
+                "id": 2,
                 "nome": "Feijão",
                 "preco": 5.79,
-                "unidade": "UN",
-                "id": 2
+                "unidade": "UN"
             },
             {
+                "id": 3,
                 "nome": "Macarrão",
                 "preco": 2.99,
-                "unidade": "UN",
-                "id": 3
+                "unidade": "UN"
             },
             {
+                "id": 4,
                 "nome": "Refrigerante",
                 "preco": 9.79,
-                "unidade": "UN",
-                "id": 4
+                "unidade": "UN"
             }
         ],
         "valorCompra": 18.57,
-        "valorTotal": 18.57
+        "formaPagamento": "DEBITO"
     }
 ]
