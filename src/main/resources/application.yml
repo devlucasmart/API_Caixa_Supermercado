@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: API_Caixa_Supermercado
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/bd2
+    username: postgres
+    password: postgres
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+jwt:
+  secret:
+    key: 4Z^XrroxR@dWxqf$mTTKwW$!@#qGr4P
+  issuer: api-caixa-supermercado
+  expiration:
+    hours: 4
+  timezone: America/Sao_Paulo

@@ -1,33 +1,30 @@
 package ifpb.api_caixa_supermercado.modules.auth.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Setter
-@Getter
-@AllArgsConstructor
+@Table(name = "users")
+@Entity(name = "User")
 @NoArgsConstructor
-@Entity
-@Table(name = "tab_user")
+@AllArgsConstructor
+@Builder
+@Getter
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_user")
-    private Integer id;
-    @Column(length = 50, nullable = false)
-    private String name;
-    @Column(length = 20, nullable = false)
-    private String username;
-    @Column(length = 100, nullable = false)
+    private Long id;
+
+    @Column(unique = true)
+    private String email;
+
     private String password;
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "tab_user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "role_id")
-    private List<String> roles = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinTable(name="users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name="role_id"))
+    private List<Role> roles;
 }
