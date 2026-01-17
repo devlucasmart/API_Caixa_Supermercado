@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name="roles")
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 public class Role {
 
     @Id
@@ -20,5 +22,6 @@ public class Role {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 50, nullable = false, unique = true)
     private RoleName name;
 }

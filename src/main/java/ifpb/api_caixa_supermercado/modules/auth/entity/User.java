@@ -3,7 +3,9 @@ package ifpb.api_caixa_supermercado.modules.auth.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Table(name = "users")
 @Entity(name = "User")
@@ -11,15 +13,22 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter // Adicionar Setter se precisar modificar atributos
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(nullable = false)
+    private String name;
+
+    @Column(unique = true, nullable = false)
     private String email;
 
+    private String phone;
+
+    @Column(nullable = false)
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)

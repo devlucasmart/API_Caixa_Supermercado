@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,12 +24,12 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true) // Habilita anotações como @PreAuthorize
+@EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
     // Configuração de CORS
     private static final List<String> ALLOWED_ORIGINS = Arrays.asList(
-            "http://localhost:3000",    // React
+            "clientAppUrl:3000",    // React
             "http://localhost:4200",    // Angular
             "http://localhost:8080",    // Vue
             "http://localhost:5173"     // Vite
@@ -82,10 +81,7 @@ public class WebSecurityConfig {
 
     // Endpoints para administradores
     public static final String[] ADMIN_ENDPOINTS = {
-            "/api/admin/**",
-            "/api/users/**",
-            "/api/produtos/gerenciar/**",
-            "/api/relatorios/**"
+            "/api/**"
     };
 
     // Endpoints para gerentes
@@ -155,10 +151,8 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                // Adiciona filtro JWT
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
-                // Configura tratamento de exceções
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(401);
@@ -183,7 +177,6 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Configura origens permitidas
         configuration.setAllowedOrigins(ALLOWED_ORIGINS);
         configuration.setAllowedMethods(ALLOWED_METHODS);
         configuration.setAllowedHeaders(ALLOWED_HEADERS);

@@ -29,7 +29,6 @@ public class JWTFilter extends OncePerRequestFilter {
     private final JwtTokenService jwtTokenService;
     private final UserRepository userRepository;
 
-    // Cache de endpoints públicos para melhor performance
     private static final List<String> PUBLIC_PATTERNS = Arrays.asList(
             "/api/users/login",
             "/api/users/register",
@@ -53,17 +52,14 @@ public class JWTFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         String method = request.getMethod();
 
-        // Log da requisição
         logger.debug("Processando requisição {} {}", method, requestURI);
 
-        // Verifica se é endpoint público
         if (isPublicEndpoint(requestURI)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         try {
-            // Extrai e valida o token
             String token = extractToken(request);
 
             if (token == null || token.isBlank()) {
@@ -76,12 +72,10 @@ public class JWTFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // Valida token e obtém usuário
             String username = jwtTokenService.getSubjectFromToken(token);
             User user = userRepository.findByEmail(username)
                     .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 
-            // Cria autenticação
             UserDetailsImpl userDetails = new UserDetailsImpl(user);
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
@@ -90,7 +84,6 @@ public class JWTFilter extends OncePerRequestFilter {
                             userDetails.getAuthorities()
                     );
 
-            // Define no contexto de segurança
             SecurityContextHolder.getContext().setAuthentication(authentication);
             logger.debug("Usuário autenticado: {}", username);
 
@@ -118,7 +111,6 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     private boolean isPublicEndpoint(String requestURI) {
-        // Verifica se a URI começa com algum padrão público
         return PUBLIC_PATTERNS.stream()
                 .anyMatch(requestURI::startsWith) ||
                 Arrays.asList(WebSecurityConfig.PUBLIC_ENDPOINTS).contains(requestURI);
