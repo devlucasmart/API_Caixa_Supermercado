@@ -10,21 +10,22 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtTokenService {
 
     @Value("${jwt.secret.key}")
-    private String secretKey; // Injetado do application.yml ou variável de ambiente
+    private String secretKey;
 
     @Value("${jwt.issuer}")
-    private String issuer; // Injetado do application.yml ou variável de ambiente
+    private String issuer;
 
     @Value("${jwt.expiration.hours}")
-    private int expirationHours; // Valor padrão 4 horas
+    private int expirationHours;
 
     @Value("${jwt.timezone}")
-    private String timezone; // Valor padrão America/Sao_Paulo
+    private String timezone;
 
     public String generateToken(UserDetailsImpl user) {
         try {
@@ -34,6 +35,10 @@ public class JwtTokenService {
                     .withIssuedAt(creationDate())
                     .withExpiresAt(expirationDate())
                     .withSubject(user.getUsername())
+                    .withClaim("authorities", user.getUser().getRoles()
+                            .stream()
+                            .map(role -> role.getName().name())
+                            .collect(Collectors.toList()))
                     .sign(algorithm);
         } catch (JWTCreationException exception){
             throw new JWTCreationException("Erro ao gerar token.", exception);

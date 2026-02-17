@@ -30,5 +30,4 @@ public enum Position {
     public static RoleName toRoleName(String position) {
         return fromPosition(position).role;
     }
-
 }

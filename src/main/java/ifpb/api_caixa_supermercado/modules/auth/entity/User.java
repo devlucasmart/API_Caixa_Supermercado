@@ -3,9 +3,7 @@ package ifpb.api_caixa_supermercado.modules.auth.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Table(name = "users")
 @Entity(name = "User")
@@ -13,7 +11,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Getter
-@Setter // Adicionar Setter se precisar modificar atributos
+@Setter
 public class User {
 
     @Id

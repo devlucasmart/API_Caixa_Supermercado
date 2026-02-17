@@ -27,12 +27,11 @@ import java.util.List;
 @EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
-    // Configuração de CORS
     private static final List<String> ALLOWED_ORIGINS = Arrays.asList(
-            "clientAppUrl:3000",    // React
-            "http://localhost:4200",    // Angular
-            "http://localhost:8080",    // Vue
-            "http://localhost:5173"     // Vite
+            "clientAppUrl:3000",
+            "http://localhost:4200",
+            "http://localhost:8080",
+            "http://localhost:5173"
     );
 
     private static final List<String> ALLOWED_METHODS = Arrays.asList(
@@ -44,53 +43,43 @@ public class WebSecurityConfig {
             "Access-Control-Request-Method", "Access-Control-Request-Headers"
     );
 
-    // Endpoints públicos (sem autenticação)
     public static final String[] PUBLIC_ENDPOINTS = {
-            // Autenticação
             "/api/users/login",
             "/api/users/register",
             "/api/auth/login",
             "/api/auth/register",
             "/api/auth/refresh-token",
 
-            // Documentação
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**",
             "/swagger-resources/**",
             "/webjars/**",
 
-            // H2 Console (apenas desenvolvimento)
             "/h2-console/**",
 
-            // Health check
             "/actuator/health",
             "/actuator/info",
 
-            // Recursos estáticos
             "/error",
             "/favicon.ico"
     };
 
-    // Endpoints para clientes
     public static final String[] CUSTOMER_ENDPOINTS = {
             "/api/caixa/**",
             "/api/vendas/**",
             "/api/carrinho/**"
     };
 
-    // Endpoints para administradores
     public static final String[] ADMIN_ENDPOINTS = {
             "/api/**"
     };
 
-    // Endpoints para gerentes
     public static final String[] MANAGER_ENDPOINTS = {
             "/api/gerente/**",
             "/api/estoque/**"
     };
 
-    // Endpoints comuns que requerem autenticação
     public static final String[] AUTHENTICATED_ENDPOINTS = {
             "/api/perfil/**",
             "/api/pedidos/**"
@@ -105,49 +94,37 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // Configura CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                // Desabilita CSRF para APIs REST
                 .csrf(AbstractHttpConfigurer::disable)
 
-                // Configura frames (para H2 Console)
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
 
-                // Configura sessão como stateless
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                // Configura autorizações
                 .authorizeHttpRequests(auth -> auth
-                        // Endpoints públicos
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
 
-                        // Autenticação - POST pública
                         .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
 
-                        // Endpoints por roles
                         .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMINISTRATOR")
                         .requestMatchers(MANAGER_ENDPOINTS).hasRole("MANAGER")
                         .requestMatchers(CUSTOMER_ENDPOINTS).hasRole("CUSTOMER")
 
-                        // Endpoints com múltiplas roles
                         .requestMatchers(HttpMethod.GET, "/api/users").hasAnyRole("ADMINISTRATOR", "MANAGER")
                         .requestMatchers("/api/relatorios/**").hasAnyRole("ADMINISTRATOR", "MANAGER")
 
-                        // Endpoints autenticados (qualquer usuário logado)
                         .requestMatchers(AUTHENTICATED_ENDPOINTS).authenticated()
 
-                        // Health checks
                         .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/info").permitAll()
 
-                        // Qualquer outra requisição requer autenticação
                         .anyRequest().authenticated()
                 )
 
@@ -184,7 +161,7 @@ public class WebSecurityConfig {
                 "Authorization", "Content-Disposition"
         ));
         configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L); // 1 hora
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
